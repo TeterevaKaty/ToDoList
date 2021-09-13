@@ -35,6 +35,7 @@ function deleteTask() {
 
     for (let i = 0; i < currenTasks.length; i++) {
         currenTasks[i].onclick = function() {
+            let childElementAmount = document.querySelectorAll(".task");
             this.parentNode.remove();
             if (childElementAmount.length === 1) {
                 allTaskDiv = document.querySelector("#tasks");
