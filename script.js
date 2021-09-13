@@ -1,3 +1,4 @@
+let start = true;
 document.querySelector('#push').onclick = function(){
     addNewTusk();
     deleteTask();
@@ -11,10 +12,10 @@ function addNewTusk() {
         alert("You cannot add an empty task :)");
     }
     else{
-        taskDiv = document.createElement('div');
-        taskDiv.id = "tasks";
         allTaskDiv = document.querySelector("#all_tasks");
-        allTaskDiv.appendChild(taskDiv);
+        if (allTaskDiv != null) {
+            allTaskDiv.id = "tasks";   
+        }   
 
         document.querySelector('#tasks').innerHTML += `
             <div class="task">
@@ -34,8 +35,11 @@ function deleteTask() {
 
     for (let i = 0; i < currenTasks.length; i++) {
         currenTasks[i].onclick = function() {
-            //this.parentNode.remove();
-            this.parentNode.parentNode.remove(this.parentNode);
+            this.parentNode.remove();
+            if (childElementAmount.length === 1) {
+                allTaskDiv = document.querySelector("#tasks");
+                allTaskDiv.id = "all_tasks";
+            }
         }
     }
 }
