@@ -7,14 +7,119 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+
+     <div class="container">
         <div id="newtask">
             <h2 type = "texr">What do you want to get done today?</h2>
             <input type="text" placeholder="New task..">
             <button id="push">Add</button>
         </div>
         <div id="all_tasks"></div>
-    </div>
-    <script src="script.js"></script>
+    </div>  
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-analytics.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyBTCIxDYWKCMYhO7tQ55s9QpPwT3K9flns",
+          authDomain: "to-do-list-ba03e.firebaseapp.com",
+          projectId: "to-do-list-ba03e",
+          storageBucket: "to-do-list-ba03e.appspot.com",
+          messagingSenderId: "576158277368",
+          appId: "1:576158277368:web:9579b2bfbfa97ac21ee50d",
+          measurementId: "G-4BE0J4QHZ2"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        document.querySelector('#push').onclick = function(){
+            addNewTask();
+            deleteTask();
+            completeTask();
+            document.querySelector("#newtask input").value = "";
+        }
+
+
+function addNewTask() {
+    if(document.querySelector('#newtask input').value.length == 0){
+        alert("You cannot add an empty task :)");
+    }
+    else{
+       let allTaskDiv = document.querySelector("#all_tasks");
+        if (allTaskDiv != null) {
+            allTaskDiv.id = "tasks";   
+        }   
+
+        document.querySelector('#tasks').innerHTML += `
+            <div class="task">
+                <span id="taskname">
+                    ${document.querySelector('#newtask input').value}
+                </span>
+                <button class="delete">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+    }
+
+    async function getTasks(db) {
+        const tasksCol = firebase.collection(db, 'todo-items');
+        const tasksSnapshot = await getDocs(tasksCol);
+        const tasksList = tasksSnapshot.docs.map(doc => doc.data());
+        console.log(tasksList);
+        return tasksList;
+    }
+
+
+    tasksCol.add({
+        text: `${document.querySelector('#newtask input').value}`,
+        status: "active",
+        data: ""
+    })
+    .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch((error) => {
+        console.error("Error adding document: ", error);
+    });
+} 
+
+function deleteTask() {
+    let currenTasks = document.querySelectorAll(".delete");
+
+    for (let i = 0; i < currenTasks.length; i++) {
+        currenTasks[i].onclick = function() {
+            let childElementAmount = document.querySelectorAll(".task");
+            this.parentNode.remove();
+            if (childElementAmount.length === 1) {
+                allTaskDiv = document.querySelector("#tasks");
+                allTaskDiv.id = "all_tasks";
+            }
+        }
+    }
+}
+
+function completeTask() {
+    let tasks = document.querySelectorAll(".task");
+
+    for (let i = 0; i < tasks.length; i++) {
+        tasks[i].onclick = function() {
+            this.classList.toggle('completed');
+        }
+    }
+}
+
+
+</script>
+
 </body>
 </html>

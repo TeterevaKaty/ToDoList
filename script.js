@@ -1,12 +1,12 @@
-let start = true;
 document.querySelector('#push').onclick = function(){
-    addNewTusk();
+    addNewTask();
     deleteTask();
     completeTask();
     document.querySelector("#newtask input").value = "";
 }
 
-function addNewTusk() {
+
+function addNewTask() {
 
     if(document.querySelector('#newtask input').value.length == 0){
         alert("You cannot add an empty task :)");
@@ -28,6 +28,18 @@ function addNewTusk() {
             </div>
         `;
     }
+
+    db.collection("todo-items").add({
+        text: `${document.querySelector('#newtask input').value}`,
+        status: "active",
+        data: ""
+    })
+    .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch((error) => {
+        console.error("Error adding document: ", error);
+    });
 } 
 
 function deleteTask() {
